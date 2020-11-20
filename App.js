@@ -4,6 +4,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { firebaseApp } from "./app/utils/firebase.js";
 import * as firebase from "firebase";
 import Navigation  from "./app/navigations/navigation";
+import LoginForm from "./app/components/LoginForm";
+import RegisterForm from "./app/components/RegisterForm";
 export default function App() {
   useEffect(
       () => {
@@ -12,6 +14,8 @@ export default function App() {
         });
       }, []);
   return (
-    <Navigation/>
+    //<Navigation/>
+     // <LoginForm/>
+      <RegisterForm/>
   );
 }
