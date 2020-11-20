@@ -14,8 +14,8 @@ export default function App() {
         });
       }, []);
   return (
-    //<Navigation/>
+    <Navigation/>
      // <LoginForm/>
-      <RegisterForm/>
+      //<RegisterForm/>
   );
 }
