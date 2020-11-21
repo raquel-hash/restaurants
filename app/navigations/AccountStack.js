@@ -1,9 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Account from '../components/Account';
+import Account from '../screens/Account';
 import {colors} from "../utils/colors";
-import Login from "../components/Screens/Login";
-import Register from "../components/Screens/Register";
+import Login from "../screens/Login";
+import Register from "../screens/Register";
 
 const Stack = createStackNavigator();
 export default function FavoritesStack() {

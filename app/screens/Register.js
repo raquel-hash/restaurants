@@ -2,14 +2,14 @@ import React, { useRef } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
 //import Toast from "react-native-easy-toast";
-import RegisterForm from "../RegisterForm";
+import RegisterForm from "./RegisterForm";
 
 export default function Register() {
 
     return (
         <KeyboardAwareScrollView>
             <Image
-                source={require("../../../assets/img/logo.png")}
+                source={require("../../assets/img/logo.png")}
                 resizeMode="contain"
                 style={styles.logo}
             />
