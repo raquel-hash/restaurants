@@ -6,8 +6,11 @@ import * as firebase from "firebase";
 import Navigation  from "./app/navigations/navigation";
 import LoginForm from "./app/screens/LoginForm";
 import RegisterForm from "./app/screens/RegisterForm";
+import {YellowBox} from "react-native";
+
 export default function App() {
-  useEffect(
+    YellowBox.ignoreWarnings(['Setting a timer']);
+    useEffect(
       () => {
         firebase.auth().onAuthStateChanged((user)=>{
           console.log(user);
