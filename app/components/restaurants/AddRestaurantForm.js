@@ -43,6 +43,8 @@ export default function AddRestaurantForm(props) {
                     name: restaurant.name,
                     address: restaurant.address,
                     time: restaurant.time,
+                    desc: restaurant.desc,
+                    createdAt: Date.now(),
                     location: locationRestaurant,
                     images: response,
                     rating: 0,

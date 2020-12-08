@@ -4,6 +4,7 @@ import Restaurants from '../screens/restaurants/Restaurants';
 import TopRestaurants from "../screens/TopRestaurants";
 import {colors} from "../utils/colors";
 import AddRestaurant from "../screens/restaurants/AddRestaurant";
+import Restaurant from "../screens/restaurants/Restaurant";
 
 
 const Stack = createStackNavigator();
@@ -25,6 +26,10 @@ export default function RestaurantStack() {
                 name='addRestaurants'
                 component={AddRestaurant}
                 options={{ title: 'Nuevo restaurante' }}
+            />
+            <Stack.Screen
+                name='restaurant'
+                component={Restaurant}
             />
         </Stack.Navigator>
     )
