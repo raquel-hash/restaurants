@@ -2,7 +2,7 @@ import React, {useState, useRef} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Toast from 'react-native-easy-toast';
 import AddRestaurantForm from "../../components/restaurants/AddRestaurantForm";
-import Loading from "../Loading";
+import Loading from "../../components/Loading";
 export default function AddRestaurantStack(props) {
     const {navigation} = props;
     const [isLoading, setIsLoading] = useState(false);
