@@ -268,7 +268,6 @@ function UploadImage(props) {
             ],
             {cancelable: false}
         );
-        console.log(image);
     };
     return (
         <View style={styles.viewImages}>

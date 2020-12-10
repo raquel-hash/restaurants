@@ -40,7 +40,7 @@ export default function ListRestaurants(props) {
 
 function Restaurant(props) {
     const {restaurant, navigation} = props;
-    const {images, name, address, desc, index} = restaurant.item;
+    const {images, name, address, desc, index, id} = restaurant.item;
     const imageRestaurant = images[0];
     const showRestaurant = () => {
         navigation.navigate("restaurant", {

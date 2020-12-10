@@ -18,7 +18,6 @@ export default function Restaurants(props) {
     const [startRestaurants, setStartRestaurants] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const limitRestaurants = 8;
-    console.log(totalRestaurants);
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((userInfo) => {
@@ -50,7 +49,6 @@ export default function Restaurants(props) {
     );
     const handleLoadMore = () => {
         const resultRestaurants = [];
-        console.log(restaurants.length, totalRestaurants);
         restaurants.length < totalRestaurants && setIsLoading(true);
         db.collection("restaurants")
             .orderBy("createdAt", "desc")
@@ -58,10 +56,7 @@ export default function Restaurants(props) {
             .limit(limitRestaurants)
             .get()
             .then( (response) => {
-                console.log("REsponse", response.docs);
-                console.log(response.docs.length);
                 if (response.docs.length > 0){
-                    console.log("Final restaurant",response.docs[response.docs.length - 1]);
                     setStartRestaurants(response.docs[response.docs.length - 1]);
                 } else {
                     setIsLoading(false);
@@ -81,7 +76,6 @@ export default function Restaurants(props) {
                 handleLoadMore={handleLoadMore}
                 isLoading={isLoading}
             />
-            <Text>Restaurants..</Text>
             {user && (
                 <Icon
                     type="material-community"
