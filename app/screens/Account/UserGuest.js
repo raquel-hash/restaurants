@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
 import { Button } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
+import {colors} from "../../utils/colors";
 
 export default function UserGuest() {
   const navigation = useNavigation();
@@ -9,14 +10,14 @@ export default function UserGuest() {
   return (
     <ScrollView centerContent={true} style={styles.viewBody}>
       <Image
-        source={require("../../../assets/img/user-guest,jpg")}
+        source={require("../../../assets/img/user-guest.jpg")}
         resizeMode="contain"
         style={styles.image}
       />
-      <Text style={styles.title}>Consulta tu perfil de 5 Tenedores</Text>
+      <Text style={styles.title}>Mejores Restaurantes Vinto</Text>
       <Text style={styles.description}>
-        ¿Como describirías tu mejor restaurante? Busca y visualiza los mejores
-        restaurantes de una forma sencilla, vota cual te ha gustado más y
+        ¿Como te gustaria un restaurante? Busca y encunetra los mejores
+        restaurantes de Vinto, aniade a favoritos,cual te ha gustado más y
         comenta como ha sito tu experiencia.
       </Text>
       <View style={styles.viewBtn}>
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btnStyle: {
-    backgroundColor: "#00a680",
+    backgroundColor: colors.primary,
   },
   btnContainer: {
     width: "70%",

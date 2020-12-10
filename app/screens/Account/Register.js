@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     viewForm: {
         marginRight: 40,
         marginLeft: 40,
+        marginBottom:40,
     },
 });
