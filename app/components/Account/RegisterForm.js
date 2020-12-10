@@ -1,41 +1,53 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
-import { isEmpty } from "lodash";
+import Loading from "../Loading";
+import { validateEmail } from "../../utils/validations";
+import { size, isEmpty } from "lodash";
 import * as firebase from "firebase";
-import { validateEmail } from "./../utils/validations";
-import Loading from "./Loading";
-import {colors} from "../utils/colors";
+import { useNavigation } from "@react-navigation/native";
+import {colors} from "../../utils/colors";
 
-export default function LoginForm(props) {
+export default function RegisterForm(props) {
+    const { toastRef } = props;
     const [showPassword, setShowPassword] = useState(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const [formData, setFormData] = useState(defaultFormValue());
     const [loading, setLoading] = useState(false);
-
-    const onChange = (e, type) => {
-        setFormData({ ...formData, [type]: e.nativeEvent.text });
-    };
+    const navigation = useNavigation();
 
     const onSubmit = () => {
-        if (isEmpty(formData.email) || isEmpty(formData.password)) {
-            console.warn("Todos los campos son obligatorios");
+        if (
+            isEmpty(formData.email) ||
+            isEmpty(formData.password) ||
+            isEmpty(formData.repeatPassword)
+        ) {
+            toastRef.current.show("Todos los campos son obligatorios");
         } else if (!validateEmail(formData.email)) {
-            console.warn("El email no es correcto");
+            toastRef.current.show("El email no es correcto");
+        } else if (formData.password !== formData.repeatPassword) {
+            toastRef.current.show("Las contraseñas tienen que ser iguales");
+        } else if (size(formData.password) < 6) {
+            toastRef.current.show("La contraseña tiene que tener al menos 6 caracteres");
         } else {
             setLoading(true);
             firebase
                 .auth()
-                .signInWithEmailAndPassword(formData.email, formData.password)
+                .createUserWithEmailAndPassword(formData.email, formData.password)
                 .then(() => {
                     setLoading(false);
-                    console.warn("OK");
-                    //navigation.navigate("account");
+                    console.warn("Registrado")
+                    navigation.navigate("account");
                 })
                 .catch(() => {
                     setLoading(false);
-                    console.warn("Email o contraseña incorrecta");
+                    toastRef.current.show("El email ya esta en uso, pruebe con otro");
                 });
         }
+    };
+
+    const onChange = (e, type) => {
+        setFormData({ ...formData, [type]: e.nativeEvent.text });
     };
 
     return (
@@ -67,13 +79,28 @@ export default function LoginForm(props) {
                     />
                 }
             />
+            <Input
+                placeholder="Repetir contraseña"
+                containerStyle={styles.inputForm}
+                password={true}
+                secureTextEntry={showRepeatPassword ? false : true}
+                onChange={(e) => onChange(e, "repeatPassword")}
+                rightIcon={
+                    <Icon
+                        type="material-community"
+                        name={showRepeatPassword ? "eye-off-outline" : "eye-outline"}
+                        iconStyle={styles.iconRight}
+                        onPress={() => setShowRepeatPassword(!showRepeatPassword)}
+                    />
+                }
+            />
             <Button
-                title="Iniciar sesión"
-                containerStyle={styles.btnContainerLogin}
-                buttonStyle={styles.btnLogin}
+                title="Unirse"
+                containerStyle={styles.btnContainerRegister}
+                buttonStyle={styles.btnRegister}
                 onPress={onSubmit}
             />
-            <Loading isVisible={loading} text="Iniciando sesión" />
+            <Loading isVisible={loading} text="Creando cuenta" />
         </View>
     );
 }
@@ -82,6 +109,7 @@ function defaultFormValue() {
     return {
         email: "",
         password: "",
+        repeatPassword: "",
     };
 }
 
@@ -96,11 +124,11 @@ const styles = StyleSheet.create({
         width: "100%",
         marginTop: 20,
     },
-    btnContainerLogin: {
+    btnContainerRegister: {
         marginTop: 20,
         width: "95%",
     },
-    btnLogin: {
+    btnRegister: {
         backgroundColor: colors.primary,
     },
     iconRight: {
