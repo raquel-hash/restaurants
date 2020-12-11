@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import {ScrollView, StyleSheet, Text, View, Dimensions} from "react-native";
 import {Rating, ListItem, Icon} from 'react-native-elements';
-import Loading from "../Loading";
+import Loading from "../../components/Loading";
 import CarouselImages from "../../components/Carousel";
 import Map from "../../components/Map";
 import {firebaseApp } from "../../utils/firebase";
