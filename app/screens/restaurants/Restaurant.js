@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef } from 'react';
 import {ScrollView, StyleSheet, Text, View, Dimensions} from "react-native";
 import {Rating, ListItem, Icon} from 'react-native-elements';
 import Loading from "../../components/Loading";
@@ -7,6 +7,7 @@ import Map from "../../components/Map";
 import {firebaseApp } from "../../utils/firebase";
 import firebase from 'firebase';
 import "firebase/firestore";
+import Toast from "react-native-easy-toast";
 import { map } from 'lodash';
 import {colors} from "../../utils/colors";
 const db = firebase.firestore(firebaseApp);
@@ -16,9 +17,16 @@ export default function Restaurant(props) {
     const [restaurant, setRestaurant] = useState(null);
     const screenWidth = Dimensions.get('window').width;
     const [rating, setRating] = useState(0);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [userLogged, setUserLogged] = useState(false);
+    const toastRef = useRef();
     navigation.setOptions({
         title: name
     });
+
+    firebase.auth().onAuthStateChanged((user) => {
+        user ? setUserLogged(true) : setUserLogged(false);
+      });
 
     useEffect(() => {
         db.collection("restaurants")
@@ -31,9 +39,79 @@ export default function Restaurant(props) {
                 setRating(data.rating);
             })
     }, []);
+
+    useEffect(() => {
+        if (userLogged && restaurant) {
+          db.collection("favorites")
+            .where("idRestaurant", "==", restaurant.id)
+            .where("idUser", "==", firebase.auth().currentUser.uid)
+            .get()
+            .then((response) => {
+              if (response.docs.length === 1) {
+                setIsFavorite(true);
+              }
+            });
+        }
+      }, [userLogged, restaurant]);
+
+    const addFavorite = () => {
+        if (!userLogged) {
+          toastRef.current.show(
+            "Para usar el sistema de favoritos tienes que estar logeado"
+          );
+        } else {
+          const payload = {
+            idUser: firebase.auth().currentUser.uid,
+            idRestaurant: restaurant.id,
+          };
+          db.collection("favorites")
+            .add(payload)
+            .then(() => {
+              setIsFavorite(true);
+              toastRef.current.show("Restaurante añadido a favoritos");
+            })
+            .catch(() => {
+              toastRef.current.show("Error al añadir el restaurnate a favoritos");
+            });
+        }
+      };
+    
+      const removeFavorite = () => {
+        db.collection("favorites")
+          .where("idRestaurant", "==", restaurant.id)
+          .where("idUser", "==", firebase.auth().currentUser.uid)
+          .get()
+          .then((response) => {
+            response.forEach((doc) => {
+              const idFavorite = doc.id;
+              db.collection("favorites")
+                .doc(idFavorite)
+                .delete()
+                .then(() => {
+                  setIsFavorite(false);
+                  toastRef.current.show("Restaurante eliminado de favoritos");
+                })
+                .catch(() => {
+                  toastRef.current.show(
+                    "Error al eliminar el restaurante de favoritos"
+                  );
+                });
+            });
+          });
+      };
     if (!restaurant) return <Loading isVisible={true} text='Cargando'/>
     return(
         <ScrollView vertical style={styles.body}>
+             <View style={styles.viewFavorite}>
+        <Icon
+          type="material-community"
+          name={isFavorite ? "heart" : "heart-outline"}
+          onPress={isFavorite ? removeFavorite : addFavorite}
+          color={isFavorite ? "#f00" : "#000"}
+          size={35}
+          underlayColor="transparent"
+        />
+      </View>
             <CarouselImages
                 images={restaurant.images}
                 height={250}
@@ -51,6 +129,7 @@ export default function Restaurant(props) {
                 address={restaurant.address}
                 schedule={restaurant.time}
             />
+         <Toast ref={toastRef} position="center" opacity={0.9} />
         </ScrollView>
     )
 }
@@ -140,5 +219,15 @@ const styles = StyleSheet.create({
     listItem: {
         borderBottomColor: colors.primary,
         borderBottomWidth: 1
-    }
+    },
+    viewFavorite: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        zIndex: 2,
+        backgroundColor: "#fff",
+        borderBottomLeftRadius: 100,
+        padding: 5,
+        paddingLeft: 15,
+      },
 });
